@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#k=0$w-h6_iiny*#1n-i!tg+kc9l%($%r_-rz_@kf53a=^ci^-'
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,10 +42,10 @@ INSTALLED_APPS = [
     'corsheaders',
     
 ]
-CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000',
-# )
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,12 +82,25 @@ WSGI_APPLICATION = 'django_tutorials.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+#!development
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'todos',
+#         'HOST': '127.0.0.1',
+#         'PORT': 27017,
+#     }
+# }
+
+#!production
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'todos',
-        'HOST': '127.0.0.1',
-        'PORT': 27017,
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': config('DJANGO_HOST')
+        }
     }
 }
 
